@@ -1,4 +1,4 @@
-const comments = [
+export const comments = [
     {
         name: "Alice McLosson",
         job: "Software Engineer",

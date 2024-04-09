@@ -5,6 +5,27 @@ import {
 import { StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
+import {comments} from "../../../data/data"
+
+function StarRating(rating:number) {
+  const stars = [];
+
+  // Fill the stars array based on the rating
+  for (let i = 0; i < 5; i++) {
+    if(i<rating){
+      stars.push(<StarIcon key={i} className="w-5 h-5 text-[var(--tertiary)]" />);
+    } else {
+      stars.push(<StarIcon key={i} className="w-5 h-5" />);
+    }
+  }
+
+  return (
+    <>
+      {/* Render the stars from the array */}
+      {stars}
+    </>
+  );
+}
 
 const page = () => {
   return (
@@ -90,119 +111,8 @@ const page = () => {
               </div>
             </div>
           </div>
-          <div className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8">
-            <div className="flex items-center flex-wrap justify-between gap-4 ">
-              <div className="flex gap-5 items-center">
-                <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    width={60}
-                    height={60}
-                    src="/img/user-1.jpg"
-                    alt="image"
-                    className=" w-full h-full object-fit-cover"
-                  />
-                </div>
-                <div className="flex-grow">
-                  <h5 className="mb-1 font-semibold"> Kiss Laura </h5>
-                  <p className="mb-0 clr-neutral-500"> Product Designer </p>
-                </div>
-              </div>
-              <div className="text-sm-end">
-                <p className="mb-1"> 09:01 am </p>
-                <p className="mb-0"> Mar 03, 2023 </p>
-              </div>
-            </div>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex gap-1 mb-3">
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            </div>
-            <p className="mb-0 clr-neutral-500">
-              I highly recommend [real estate agent&apos;s name] as a
-              professional and knowledgeable real estate agent. They provided
-              valuable guidance throughout the selling process
-            </p>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex flex-wrap items-center gap-10 mb-6">
-              <div className="flex items-center gap-2 text-primary">
-                <HandThumbUpIcon className="w-5 h-5" />
-                <span className="inline-block"> 178 </span>
-              </div>
-              <div className="flex items-center gap-2 text-primary">
-                <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                <span className="inline-block"> Reply </span>
-              </div>
-            </div>
-            <div className="flex gap-5 items-center">
-              <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                <Image
-                  width={60}
-                  height={60}
-                  src="/img/user-2.jpg"
-                  alt="image"
-                  className=" w-full h-full object-fit-cover"
-                />
-              </div>
-              <div className="flex-grow">
-                <input
-                  className="border text-base py-4 px-5 rounded-full focus:outline-none w-full"
-                  type="text"
-                  placeholder="Join the discussion"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8">
-            <div className="flex items-center flex-wrap justify-between gap-4">
-              <div className="flex gap-5 items-center">
-                <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    width={60}
-                    height={60}
-                    src="/img/user-3.jpg"
-                    alt="image"
-                    className=" w-full h-full object-fit-cover"
-                  />
-                </div>
-                <div className="flex-grow">
-                  <h5 className="mb-1 font-semibold"> Kristin Watson </h5>
-                  <p className="mb-0 clr-neutral-500"> Product Designer </p>
-                </div>
-              </div>
-              <div className="text-sm-end">
-                <p className="mb-1"> 09:01 am </p>
-                <p className="mb-0"> Mar 03, 2023 </p>
-              </div>
-            </div>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex gap-1 mb-3">
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            </div>
-            <p className="mb-0 clr-neutral-500">
-              I highly recommend [real estate agent&apos;s name] as a
-              professional and knowledgeable real estate agent. They provided
-              valuable guidance throughout the selling process
-            </p>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex flex-wrap items-center gap-10">
-              <div className="flex items-center gap-2 text-primary">
-                <HandThumbUpIcon className="w-5 h-5" />
-                <span className="inline-block"> 178 </span>
-              </div>
-              <div className="flex items-center gap-2 text-primary">
-                <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                <span className="inline-block"> Reply </span>
-              </div>
-            </div>
-          </div>
-          <div className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8">
+          {comments.map((comment,index)=>{
+            return <><div key={index} className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8">
             <div className="flex items-center flex-wrap justify-between gap-4">
               <div className="flex gap-5 items-center">
                 <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
@@ -215,40 +125,36 @@ const page = () => {
                   />
                 </div>
                 <div className="flex-grow">
-                  <h5 className="mb-1 font-semibold"> Marvin McKinney </h5>
-                  <p className="mb-0 clr-neutral-500"> Product Designer </p>
+                  <h5 className="mb-1 font-semibold"> {comment.name} </h5>
+                  <p className="mb-0 clr-neutral-500"> {comment.job} </p>
                 </div>
               </div>
               <div className="text-sm-end">
-                <p className="mb-1"> 09:01 am </p>
-                <p className="mb-0"> Mar 03, 2023 </p>
+                <p className="mb-1"> {comment.time} </p>
+                <p className="mb-0"> {comment.date} </p>
               </div>
             </div>
             <div className="border border-dashed my-6"></div>
             <div className="flex gap-1 mb-3">
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
+              {StarRating(comment.nbstars)}
             </div>
             <p className="mb-0 clr-neutral-500">
-              I highly recommend [real estate agent&apos;s name] as a
-              professional and knowledgeable real estate agent. They provided
-              valuable guidance throughout the selling process
+             {comment.content}
             </p>
             <div className="border border-dashed my-6"></div>
             <div className="flex flex-wrap items-center gap-10">
               <div className="flex items-center gap-2 text-primary">
                 <HandThumbUpIcon className="w-5 h-5" />
-                <span className="inline-block"> 178 </span>
+                <span className="inline-block"> {comment.likes} </span>
               </div>
               <div className="flex items-center gap-2 text-primary">
                 <ChatBubbleLeftRightIcon className="w-5 h-5" />
                 <span className="inline-block"> Reply </span>
               </div>
             </div>
-          </div>
+          </div></>
+          })}
+          
           <Link
             href="#"
             className="featured-tab link font-semibold clr-primary-400 inline-block py-3 px-6 bg-[var(--primary-light)] hover:bg-primary hover:text-white rounded-full active">
@@ -256,8 +162,8 @@ const page = () => {
           </Link>
         </div>
       </div>
-
-      <div className="section-space--sm">
+ {/* Formulaire d'écriture de commentaire */}
+     {/*  <div className="section-space--sm">
         <div className="bg-white rounded-2xl p-3 sm:p-4 lg:py-8 lg:px-5">
           <h4 className="mb-0 text-2xl font-semibold">Write a review</h4>
           <div className="border border-dashed my-6"></div>
@@ -316,7 +222,7 @@ const page = () => {
             </div>
           </form>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

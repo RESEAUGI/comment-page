@@ -21,8 +21,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const path = usePathname();
-  return (
-    <div className="py-[30px] lg:py-[60px] bg-[var(--bg-2)] px-3">
+  return ( <div>{children}</div>
+   /*  <div className="py-[30px] lg:py-[60px] bg-[var(--bg-2)] px-3">
       <div className="container">
         <div className="grid grid-cols-12 gap-4 lg:gap-6">
           <div className="col-span-12 xl:col-span-4">
@@ -278,6 +278,6 @@ export default function RootLayout({
           </div>
         </div>
       </div>
-    </div>
+    </div> */
   );
 }
