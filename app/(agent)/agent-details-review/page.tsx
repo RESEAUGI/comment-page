@@ -7,6 +7,15 @@ import Image from "next/image";
 import Link from "next/link";
 import {comments} from "../../../data/data"
 
+type comment = {
+  name: string;
+  time: string;
+  date: string;
+  nbstars: number;
+  content: string;
+  likes: number;
+};
+
 function StarRating(rating:number) {
   const stars = [];
 
@@ -15,7 +24,7 @@ function StarRating(rating:number) {
     if(i<rating){
       stars.push(<StarIcon key={i} className="w-5 h-5 text-[var(--tertiary)]" />);
     } else {
-      stars.push(<StarIcon key={i} className="w-5 h-5" />);
+      stars.push(<StarIcon key={i} className="w-5 h-5 text-[#AAAAAA]" />);
     }
   }
 
@@ -27,12 +36,30 @@ function StarRating(rating:number) {
   );
 }
 
+function calculateAverageRating(list: comment[]): string {
+  if (list.length === 0) {
+    return "0.0";
+  }
+
+  const totalStars = list.reduce((acc, comment) => acc + comment.nbstars, 0);
+
+  const averageRating = (totalStars / list.length).toFixed(1);
+
+  return averageRating;
+}
+
+function calculateRatingPercent(rating:number){
+  const ratingList = comments.filter(comment => comment.nbstars === rating);
+  return ((ratingList.length / comments.length) * 100).toFixed(0) ;
+}
+
 const page = () => {
   return (
     <div className="col-span-12">
       <div className="p-3 sm:p-4 lg:p-6 xl:p-8 bg-white rounded-2xl mb-8">
         <div className="flex items-center gap-2">
-          <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
+          <StarIcon className="w-7 h-7 text-[var(--tertiary)]" />
+          <h4 className="mb-0 text-3xl font-bold flex-grow"> {calculateAverageRating(comments)} </h4>
           <h4 className="mb-0 text-2xl font-semibold flex-grow">
             {" "}
             Average Reviews{" "}
@@ -40,64 +67,25 @@ const page = () => {
         </div>
         <div className="border border-dashed my-8"></div>
         <ul className="flex flex-col gap-2">
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 5 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[90%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">90%</span>
-          </li>
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 4 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[75%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">75%</span>
-          </li>
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 3 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[65%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">65%</span>
-          </li>
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 2 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[45%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">45%</span>
-          </li>
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 1 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[25%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">25%</span>
-          </li>
+        {[5, 4, 3, 2, 1].map((rating) => (
+            <li key={rating} className="flex items-center gap-3">
+              <div className="flex items-center shrink-0">
+                <span className="inline-block"> {rating} </span>
+                <i className="lar la-star"></i>
+              </div>
+              <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
+                <div className={`rounded-3xl bg-[#FFC107] h-full w-[${calculateRatingPercent(rating)}%]`}></div>
+              </div>
+              <span className="inline-block font-medium shrink-0">{calculateRatingPercent(rating)}%</span>
+            </li>
+          ))}
         </ul>
         <div className="border border-dashed my-8"></div>
 
         <div className="bg-white rounded-2xl sm:p-4 lg:py-8 lg:px-5">
           <div className="flex items-center gap-4 justify-between flex-wrap mb-10">
             <div className="flex items-center gap-2">
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <h3 className="mb-0 h3"> 4.7 (21 reviews) </h3>
+              <h3 className="mb-0 h3"> {comments.length} reviews </h3>
             </div>
             <div className="flex items-center gap-2">
               <p className="mb-0 clr-neutral-500 shrink-0"> Sort By : </p>
@@ -126,7 +114,6 @@ const page = () => {
                 </div>
                 <div className="flex-grow">
                   <h5 className="mb-1 font-semibold"> {comment.name} </h5>
-                  <p className="mb-0 clr-neutral-500"> {comment.job} </p>
                 </div>
               </div>
               <div className="text-sm-end">

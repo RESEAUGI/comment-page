@@ -1,7 +1,6 @@
 export const comments = [
     {
         name: "Alice McLosson",
-        job: "Software Engineer",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "Great article! I really enjoyed reading it and found the insights to be very valuable. Keep up the good work!",
@@ -10,7 +9,6 @@ export const comments = [
     },
     {
         name: "Bob Akasaki",
-        job: "Data Scientist",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "This topic is fascinating and well-presented. I appreciate the effort put into this article. Well done!",
@@ -19,7 +17,6 @@ export const comments = [
     },
     {
         name: "Charlie Williams",
-        job: "UX Designer",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "I have some reservations about this article. While it touches on important points, I feel it lacks depth in certain areas.",
@@ -28,7 +25,6 @@ export const comments = [
     },
     {
         name: "David Atangana",
-        job: "Web Developer",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "I found this article to be somewhat lacking in detail. It would be beneficial to include more examples and practical applications.",
@@ -37,7 +33,6 @@ export const comments = [
     },
     {
         name: "Eve Mbarga",
-        job: "Network Engineer",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "The topic discussed is interesting, but I feel that the article could benefit from a more structured approach and deeper analysis.",
@@ -46,7 +41,6 @@ export const comments = [
     },
     {
         name: "Frank Moussima",
-        job: "Cybersecurity Analyst",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "I had high expectations for this article, but unfortunately, it fell short. The content seemed superficial and lacking in substance.",
@@ -55,7 +49,6 @@ export const comments = [
     },
     {
         name: "Grace Dakoda",
-        job: "IT Support Specialist",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "I appreciate the effort put into this article. However, I believe that it could benefit from more in-depth analysis and practical examples to support the points made.",
@@ -64,7 +57,6 @@ export const comments = [
     },
     {
         name: "Henry Danger",
-        job: "Cloud Architect",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "The content presented in this article is comprehensive and well-organized. I particularly enjoyed the practical examples provided. Great job!",
@@ -73,7 +65,6 @@ export const comments = [
     },
     {
         name: "Ivy Doragon",
-        job: "AI Researcher",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "I found the article to be quite informative and engaging. The insights shared were valuable and thought-provoking. Well done!",
@@ -82,7 +73,6 @@ export const comments = [
     },
     {
         name: "Jack MagicBean",
-        job: "Blockchain Developer",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "The article provides a good overview of the topic, but I believe it could benefit from more detailed explanations and real-world examples.",
@@ -91,11 +81,18 @@ export const comments = [
     },
     {
         name: "Kate Lorin",
-        job: "Frontend Developer",
         date: "2024-04-09",
         time: "12:00 PM",
         content: "I enjoyed reading this article and found the content to be insightful. However, I feel that certain points could be further elaborated on for clarity.",
         nbstars: 4,
         likes: 22
+    },
+    {
+        name: "Kim Mboa",
+        date: "2024-04-09",
+        time: "14:00 PM",
+        content: "I enjoyed reading this article and found the content to be insightful. However, I feel that certain points could be further elaborated on for clarity.",
+        nbstars: 4,
+        likes: 33
     }
 ];
