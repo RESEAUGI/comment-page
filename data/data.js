@@ -4,7 +4,7 @@ export const comments = [
         date: "2024-04-09",
         time: "12:00 PM",
         content: "Great article! I really enjoyed reading it and found the insights to be very valuable. Keep up the good work!",
-        nbstars: 4,
+        nbstars: 3,
         likes: 25
     },
     {

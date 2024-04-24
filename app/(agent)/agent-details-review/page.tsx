@@ -1,3 +1,4 @@
+"use client";
 import {
   ChatBubbleLeftRightIcon,
   HandThumbUpIcon,
@@ -5,7 +6,8 @@ import {
 import { StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
-import {comments} from "../../../data/data"
+import { comments } from "../../../data/data";
+import { useState } from "react";
 
 type comment = {
   name: string;
@@ -16,13 +18,15 @@ type comment = {
   likes: number;
 };
 
-function StarRating(rating:number) {
+function StarRating(rating: number) {
   const stars = [];
 
   // Fill the stars array based on the rating
   for (let i = 0; i < 5; i++) {
-    if(i<rating){
-      stars.push(<StarIcon key={i} className="w-5 h-5 text-[var(--tertiary)]" />);
+    if (i < rating) {
+      stars.push(
+        <StarIcon key={i} className="w-5 h-5 text-[var(--tertiary)]" />
+      );
     } else {
       stars.push(<StarIcon key={i} className="w-5 h-5 text-[#AAAAAA]" />);
     }
@@ -48,18 +52,22 @@ function calculateAverageRating(list: comment[]): string {
   return averageRating;
 }
 
-function calculateRatingPercent(rating:number){
-  const ratingList = comments.filter(comment => comment.nbstars === rating);
-  return ((ratingList.length / comments.length) * 100).toFixed(0) ;
+function calculateRatingPercent(rating: number) {
+  const ratingList = comments.filter((comment) => comment.nbstars === rating);
+  return ((ratingList.length / comments.length) * 100).toFixed(0);
 }
 
-const page = () => {
+const Page = () => {
+  const [openReviews, setOpenReviews] = useState(false);
   return (
     <div className="col-span-12">
       <div className="p-3 sm:p-4 lg:p-6 xl:p-8 bg-white rounded-2xl mb-8">
         <div className="flex items-center gap-2">
           <StarIcon className="w-7 h-7 text-[var(--tertiary)]" />
-          <h4 className="mb-0 text-3xl font-bold flex-grow"> {calculateAverageRating(comments)} </h4>
+          <h4 className="mb-0 text-3xl font-bold flex-grow">
+            {" "}
+            {calculateAverageRating(comments)}{" "}
+          </h4>
           <h4 className="mb-0 text-2xl font-semibold flex-grow">
             {" "}
             Average Reviews{" "}
@@ -67,16 +75,21 @@ const page = () => {
         </div>
         <div className="border border-dashed my-8"></div>
         <ul className="flex flex-col gap-2">
-        {[5, 4, 3, 2, 1].map((rating) => (
-            <li key={rating} className="flex items-center gap-3">
+          {[5, 4, 3, 2, 1].map((rating, index) => (
+            <li key={index} className="flex items-center gap-3">
               <div className="flex items-center shrink-0">
                 <span className="inline-block"> {rating} </span>
                 <i className="lar la-star"></i>
               </div>
               <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-                <div className={`rounded-3xl bg-[#FFC107] h-full w-[${calculateRatingPercent(rating)}%]`}></div>
+                <div
+                  className={`rounded-3xl bg-[#FFC107] h-full`}
+                  style={{ width: `${calculateRatingPercent(rating)}%` }}
+                ></div>
               </div>
-              <span className="inline-block font-medium shrink-0">{calculateRatingPercent(rating)}%</span>
+              <span className="inline-block font-medium shrink-0">
+                {calculateRatingPercent(rating)}%
+              </span>
             </li>
           ))}
         </ul>
@@ -92,65 +105,73 @@ const page = () => {
               <div className="border rounded-full pr-3">
                 <select className="w-full bg-transparent px-5 py-3 focus:outline-none">
                   <option>Latest</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                  <option>Most interesting</option>
+                  <option value="1">1⭐</option>
+                  <option value="2">2⭐</option>
+                  <option value="3">3⭐</option>
+                  <option value="3">4⭐</option>
+                  <option value="3">5⭐</option>
                 </select>
               </div>
             </div>
           </div>
-          {comments.map((comment,index)=>{
-            return <><div key={index} className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8">
-            <div className="flex items-center flex-wrap justify-between gap-4">
-              <div className="flex gap-5 items-center">
-                <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    width={60}
-                    height={60}
-                    src="/img/user-4.jpg"
-                    alt="image"
-                    className=" w-full h-full object-fit-cover"
-                  />
+          {comments.map((comment, index) => {
+            return (
+              index > 1  && !openReviews?"":
+              <div
+                key={index}
+                className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8"
+              >
+                <div className="flex items-center flex-wrap justify-between gap-4">
+                  <div className="flex gap-5 items-center">
+                    <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
+                      <Image
+                        width={60}
+                        height={60}
+                        src="/img/user-4.jpg"
+                        alt="image"
+                        className=" w-full h-full object-fit-cover"
+                      />
+                    </div>
+                    <div className="flex-grow">
+                      <h5 className="mb-1 font-semibold"> {comment.name} </h5>
+                    </div>
+                  </div>
+                  <div className="text-sm-end">
+                    <p className="mb-1"> {comment.time} </p>
+                    <p className="mb-0"> {comment.date} </p>
+                  </div>
                 </div>
-                <div className="flex-grow">
-                  <h5 className="mb-1 font-semibold"> {comment.name} </h5>
+                <div className="border border-dashed my-6"></div>
+                <div className="flex gap-1 mb-3">
+                  {StarRating(comment.nbstars)}
+                </div>
+                <p className="mb-0 clr-neutral-500">{comment.content}</p>
+                <div className="border border-dashed my-6"></div>
+                <div className="flex flex-wrap items-center gap-10">
+                  <div className="flex items-center gap-2 text-primary">
+                    <HandThumbUpIcon className="w-5 h-5" />
+                    <span className="inline-block"> {comment.likes} </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-primary">
+                    <ChatBubbleLeftRightIcon className="w-5 h-5" />
+                    <span className="inline-block"> Reply </span>
+                  </div>
                 </div>
               </div>
-              <div className="text-sm-end">
-                <p className="mb-1"> {comment.time} </p>
-                <p className="mb-0"> {comment.date} </p>
-              </div>
-            </div>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex gap-1 mb-3">
-              {StarRating(comment.nbstars)}
-            </div>
-            <p className="mb-0 clr-neutral-500">
-             {comment.content}
-            </p>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex flex-wrap items-center gap-10">
-              <div className="flex items-center gap-2 text-primary">
-                <HandThumbUpIcon className="w-5 h-5" />
-                <span className="inline-block"> {comment.likes} </span>
-              </div>
-              <div className="flex items-center gap-2 text-primary">
-                <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                <span className="inline-block"> Reply </span>
-              </div>
-            </div>
-          </div></>
+            );
           })}
-          
-          <Link
-            href="#"
-            className="featured-tab link font-semibold clr-primary-400 inline-block py-3 px-6 bg-[var(--primary-light)] hover:bg-primary hover:text-white rounded-full active">
-            See All Reviews
-          </Link>
+
+          <button
+            onClick={() => setOpenReviews(!openReviews)}
+            className="featured-tab link font-semibold clr-primary-400 inline-block py-3 px-6 bg-[var(--primary-light)] hover:bg-primary hover:text-white rounded-full active"
+          >
+            {openReviews ? "Hide" : "See All Reviews"}
+          </button>
         </div>
       </div>
- {/* Formulaire d'écriture de commentaire */}
-     {/*  <div className="section-space--sm">
+      {/* Formulaire d'écriture de commentaire */}
+      {/*  <div className="section-space--sm">
         <div className="bg-white rounded-2xl p-3 sm:p-4 lg:py-8 lg:px-5">
           <h4 className="mb-0 text-2xl font-semibold">Write a review</h4>
           <div className="border border-dashed my-6"></div>
@@ -214,4 +235,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
