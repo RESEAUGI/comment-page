@@ -6,7 +6,7 @@ import {
 import { StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
-import { comments } from "../../../data/data";
+import { AllComments } from "../../../data/data";
 import { useState } from "react";
 
 type comment = {
@@ -53,11 +53,45 @@ function calculateAverageRating(list: comment[]): string {
 }
 
 function calculateRatingPercent(rating: number) {
-  const ratingList = comments.filter((comment) => comment.nbstars === rating);
-  return ((ratingList.length / comments.length) * 100).toFixed(0);
+  const ratingList = AllComments.filter(
+    (comment) => comment.nbstars === rating
+  );
+  return ((ratingList.length / AllComments.length) * 100).toFixed(0);
 }
 
+const filterByRating = (rating: number) => {
+  const result = AllComments.filter((comment) => {
+    comment.nbstars == rating;
+  });
+  return result;
+};
+
+const sortByLikes = () => {
+  const sortedComments = [...AllComments];
+  sortedComments.sort((comment1, comment2) => comment1.likes - comment2.likes);
+  return sortedComments;
+};
+
+const extractDateFromISO8601 = (isoDate: string) => {
+  const dateParts = isoDate.split("T");
+  return dateParts[0];
+};
+const extractTimeFromISO8601 = (isoDate: string) => {
+  const dateParts = isoDate.split("T");
+  return dateParts[1].split(".")[0];
+};
+
+const sortByDate = () => {
+  const sortedComments = [...AllComments];
+  sortedComments.sort((comment1, comment2) => {
+    const date1 = new Date(comment1.date);
+    const date2 = new Date(comment2.date);
+    return date1.getTime() - date2.getTime();
+  });
+  return sortedComments;
+};
 const Page = () => {
+  const [comments, setComments] = useState(AllComments);
   const [openReviews, setOpenReviews] = useState(false);
   return (
     <div className="col-span-12">
@@ -66,7 +100,7 @@ const Page = () => {
           <StarIcon className="w-7 h-7 text-[var(--tertiary)]" />
           <h4 className="mb-0 text-3xl font-bold flex-grow">
             {" "}
-            {calculateAverageRating(comments)}{" "}
+            {calculateAverageRating(AllComments)}{" "}
           </h4>
           <h4 className="mb-0 text-2xl font-semibold flex-grow">
             {" "}
@@ -116,8 +150,9 @@ const Page = () => {
             </div>
           </div>
           {comments.map((comment, index) => {
-            return (
-              index > 1  && !openReviews?"":
+            return index > 1 && !openReviews ? (
+              ""
+            ) : (
               <div
                 key={index}
                 className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8"
@@ -138,8 +173,8 @@ const Page = () => {
                     </div>
                   </div>
                   <div className="text-sm-end">
-                    <p className="mb-1"> {comment.time} </p>
-                    <p className="mb-0"> {comment.date} </p>
+                    <p className="mb-1"> {extractTimeFromISO8601(comment.date)} </p>
+                    <p className="mb-0"> {extractDateFromISO8601(comment.date)} </p>
                   </div>
                 </div>
                 <div className="border border-dashed my-6"></div>
