@@ -1,3 +1,4 @@
+"use client";
 import {
   ChatBubbleLeftRightIcon,
   HandThumbUpIcon,
@@ -5,13 +6,119 @@ import {
 import { StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
+import { AllComments } from "../../../data/data";
+import { useState } from "react";
 
-const page = () => {
+type comment = {
+  name: string;
+  date: string;
+  nbstars: number;
+  content: string;
+  likes: number;
+};
+
+function StarRating(rating: number) {
+  const stars = [];
+
+  // Fill the stars array based on the rating
+  for (let i = 0; i < 5; i++) {
+    if (i < rating) {
+      stars.push(
+        <StarIcon key={i} className="w-5 h-5 text-[var(--tertiary)]" />
+      );
+    } else {
+      stars.push(<StarIcon key={i} className="w-5 h-5 text-[#AAAAAA]" />);
+    }
+  }
+
+  return (
+    <>
+      {/* Render the stars from the array */}
+      {stars}
+    </>
+  );
+}
+
+function calculateAverageRating(list: comment[]): string {
+  if (list.length === 0) {
+    return "0.0";
+  }
+
+  const totalStars = list.reduce((acc, comment) => acc + comment.nbstars, 0);
+
+  const averageRating = (totalStars / list.length).toFixed(1);
+
+  return averageRating;
+}
+
+function calculateRatingPercent(rating: number) {
+  const ratingList = AllComments.filter(
+    (comment) => comment.nbstars === rating
+  );
+  return ((ratingList.length / AllComments.length) * 100).toFixed(0);
+}
+
+const filterByRating = (rating: number) => {
+  console.log(rating);
+  const result = AllComments.filter((comment) => comment.nbstars == rating);
+  console.log("hey");
+
+  return result;
+};
+
+const sortByLikes = () => {
+  const sortedComments = [...AllComments];
+  sortedComments.sort((comment1, comment2) => comment2.likes - comment1.likes);
+  return sortedComments;
+};
+
+const extractDateFromISO8601 = (isoDate: string) => {
+  const dateParts = isoDate.split("T");
+  return dateParts[0];
+};
+const extractTimeFromISO8601 = (isoDate: string) => {
+  const dateParts = isoDate.split("T");
+  return dateParts[1].split(".")[0];
+};
+
+const sortByDate = () => {
+  const sortedComments = [...AllComments];
+  sortedComments.sort((comment1, comment2) => {
+    const date1 = new Date(comment1.date);
+    const date2 = new Date(comment2.date);
+    return date2.getTime() - date1.getTime();
+  });
+  return sortedComments;
+};
+const Page = () => {
+  const [comments, setComments] = useState(AllComments);
+  const [openReviews, setOpenReviews] = useState(false);
+  const [filterType, setFilterType] = useState("none");
+  const handleFilterType = (e) => {
+    const value = e.target.value;
+    setFilterType(value);
+    switch (value) {
+      case "none":
+        break;
+      case "latest":
+        setComments(sortByDate());
+        break;
+      case "interest":
+        setComments(sortByLikes());
+        break;
+      default:
+        setComments(filterByRating(parseInt(e.target.value)));
+    }
+  };
   return (
     <div className="col-span-12">
       <div className="p-3 sm:p-4 lg:p-6 xl:p-8 bg-white rounded-2xl mb-8">
         <div className="flex items-center gap-2">
-          <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
+          <StarIcon className="w-7 h-7 text-[var(--tertiary)]" />
+          <h4 className="mb-0 text-3xl font-bold flex-grow">
+            {" "}
+            {calculateAverageRating(AllComments)}{" "}
+          </h4>
           <h4 className="mb-0 text-2xl font-semibold flex-grow">
             {" "}
             Average Reviews{" "}
@@ -19,245 +126,114 @@ const page = () => {
         </div>
         <div className="border border-dashed my-8"></div>
         <ul className="flex flex-col gap-2">
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 5 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[90%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">90%</span>
-          </li>
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 4 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[75%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">75%</span>
-          </li>
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 3 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[65%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">65%</span>
-          </li>
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 2 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[45%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">45%</span>
-          </li>
-          <li className="flex items-center gap-3">
-            <div className="flex items-center shrink-0">
-              <span className="inline-block"> 1 </span>
-              <i className="lar la-star"></i>
-            </div>
-            <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
-              <div className="rounded-s-3xl bg-[#FFC107] h-full w-[25%]"></div>
-            </div>
-            <span className="inline-block font-medium shrink-0">25%</span>
-          </li>
+          {[5, 4, 3, 2, 1].map((rating, index) => (
+            <li key={index} className="flex items-center gap-3">
+              <div className="flex items-center shrink-0">
+                <span className="inline-block"> {rating} </span>
+                <i className="lar la-star"></i>
+              </div>
+              <div className="w-full bg-[#E9ECEF] rounded-3xl h-3 flex-grow">
+                <div
+                  className={`rounded-3xl bg-[#FFC107] h-full`}
+                  style={{ width: `${calculateRatingPercent(rating)}%` }}
+                ></div>
+              </div>
+              <span className="inline-block font-medium shrink-0">
+                {calculateRatingPercent(rating)}%
+              </span>
+            </li>
+          ))}
         </ul>
         <div className="border border-dashed my-8"></div>
 
         <div className="bg-white rounded-2xl sm:p-4 lg:py-8 lg:px-5">
           <div className="flex items-center gap-4 justify-between flex-wrap mb-10">
             <div className="flex items-center gap-2">
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <h3 className="mb-0 h3"> 4.7 (21 reviews) </h3>
+              <h3 className="mb-0 h3"> {comments.length} reviews </h3>
             </div>
             <div className="flex items-center gap-2">
               <p className="mb-0 clr-neutral-500 shrink-0"> Sort By : </p>
               <div className="border rounded-full pr-3">
-                <select className="w-full bg-transparent px-5 py-3 focus:outline-none">
-                  <option>Latest</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
+                <select
+                  className="w-full bg-transparent px-5 py-3 focus:outline-none"
+                  onChange={handleFilterType}
+                >
+                  <option value="none">none</option>
+                  <option value="latest">Latest</option>
+                  <option value="interest">Most interesting</option>
+                  <option value="1">1⭐</option>
+                  <option value="2">2⭐</option>
+                  <option value="3">3⭐</option>
+                  <option value="4">4⭐</option>
+                  <option value="5">5⭐</option>
                 </select>
               </div>
             </div>
           </div>
-          <div className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8">
-            <div className="flex items-center flex-wrap justify-between gap-4 ">
-              <div className="flex gap-5 items-center">
-                <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    width={60}
-                    height={60}
-                    src="/img/user-1.jpg"
-                    alt="image"
-                    className=" w-full h-full object-fit-cover"
-                  />
+          {comments.map((comment, index) => {
+            return index > 1 && !openReviews ? (
+              ""
+            ) : (
+              <div
+                key={index}
+                className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8"
+              >
+                <div className="flex items-center flex-wrap justify-between gap-4">
+                  <div className="flex gap-5 items-center">
+                    <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
+                      <Image
+                        width={60}
+                        height={60}
+                        src="/img/user-4.jpg"
+                        alt="image"
+                        className=" w-full h-full object-fit-cover"
+                      />
+                    </div>
+                    <div className="flex-grow">
+                      <h5 className="mb-1 font-semibold"> {comment.name} </h5>
+                    </div>
+                  </div>
+                  <div className="text-sm-end">
+                    <p className="mb-1">
+                      {" "}
+                      {extractTimeFromISO8601(comment.date)}{" "}
+                    </p>
+                    <p className="mb-0">
+                      {" "}
+                      {extractDateFromISO8601(comment.date)}{" "}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-grow">
-                  <h5 className="mb-1 font-semibold"> Kiss Laura </h5>
-                  <p className="mb-0 clr-neutral-500"> Product Designer </p>
+                <div className="border border-dashed my-6"></div>
+                <div className="flex gap-1 mb-3">
+                  {StarRating(comment.nbstars)}
                 </div>
-              </div>
-              <div className="text-sm-end">
-                <p className="mb-1"> 09:01 am </p>
-                <p className="mb-0"> Mar 03, 2023 </p>
-              </div>
-            </div>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex gap-1 mb-3">
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            </div>
-            <p className="mb-0 clr-neutral-500">
-              I highly recommend [real estate agent&apos;s name] as a
-              professional and knowledgeable real estate agent. They provided
-              valuable guidance throughout the selling process
-            </p>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex flex-wrap items-center gap-10 mb-6">
-              <div className="flex items-center gap-2 text-primary">
-                <HandThumbUpIcon className="w-5 h-5" />
-                <span className="inline-block"> 178 </span>
-              </div>
-              <div className="flex items-center gap-2 text-primary">
-                <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                <span className="inline-block"> Reply </span>
-              </div>
-            </div>
-            <div className="flex gap-5 items-center">
-              <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                <Image
-                  width={60}
-                  height={60}
-                  src="/img/user-2.jpg"
-                  alt="image"
-                  className=" w-full h-full object-fit-cover"
-                />
-              </div>
-              <div className="flex-grow">
-                <input
-                  className="border text-base py-4 px-5 rounded-full focus:outline-none w-full"
-                  type="text"
-                  placeholder="Join the discussion"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8">
-            <div className="flex items-center flex-wrap justify-between gap-4">
-              <div className="flex gap-5 items-center">
-                <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    width={60}
-                    height={60}
-                    src="/img/user-3.jpg"
-                    alt="image"
-                    className=" w-full h-full object-fit-cover"
-                  />
-                </div>
-                <div className="flex-grow">
-                  <h5 className="mb-1 font-semibold"> Kristin Watson </h5>
-                  <p className="mb-0 clr-neutral-500"> Product Designer </p>
+                <p className="mb-0 clr-neutral-500">{comment.content}</p>
+                <div className="border border-dashed my-6"></div>
+                <div className="flex flex-wrap items-center gap-10">
+                  <div className="flex items-center gap-2 text-primary">
+                    <HandThumbUpIcon className="w-5 h-5" />
+                    <span className="inline-block"> {comment.likes} </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-primary">
+                    <ChatBubbleLeftRightIcon className="w-5 h-5" />
+                    <span className="inline-block"> Reply </span>
+                  </div>
                 </div>
               </div>
-              <div className="text-sm-end">
-                <p className="mb-1"> 09:01 am </p>
-                <p className="mb-0"> Mar 03, 2023 </p>
-              </div>
-            </div>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex gap-1 mb-3">
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            </div>
-            <p className="mb-0 clr-neutral-500">
-              I highly recommend [real estate agent&apos;s name] as a
-              professional and knowledgeable real estate agent. They provided
-              valuable guidance throughout the selling process
-            </p>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex flex-wrap items-center gap-10">
-              <div className="flex items-center gap-2 text-primary">
-                <HandThumbUpIcon className="w-5 h-5" />
-                <span className="inline-block"> 178 </span>
-              </div>
-              <div className="flex items-center gap-2 text-primary">
-                <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                <span className="inline-block"> Reply </span>
-              </div>
-            </div>
-          </div>
-          <div className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8">
-            <div className="flex items-center flex-wrap justify-between gap-4">
-              <div className="flex gap-5 items-center">
-                <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                  <Image
-                    width={60}
-                    height={60}
-                    src="/img/user-4.jpg"
-                    alt="image"
-                    className=" w-full h-full object-fit-cover"
-                  />
-                </div>
-                <div className="flex-grow">
-                  <h5 className="mb-1 font-semibold"> Marvin McKinney </h5>
-                  <p className="mb-0 clr-neutral-500"> Product Designer </p>
-                </div>
-              </div>
-              <div className="text-sm-end">
-                <p className="mb-1"> 09:01 am </p>
-                <p className="mb-0"> Mar 03, 2023 </p>
-              </div>
-            </div>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex gap-1 mb-3">
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-              <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            </div>
-            <p className="mb-0 clr-neutral-500">
-              I highly recommend [real estate agent&apos;s name] as a
-              professional and knowledgeable real estate agent. They provided
-              valuable guidance throughout the selling process
-            </p>
-            <div className="border border-dashed my-6"></div>
-            <div className="flex flex-wrap items-center gap-10">
-              <div className="flex items-center gap-2 text-primary">
-                <HandThumbUpIcon className="w-5 h-5" />
-                <span className="inline-block"> 178 </span>
-              </div>
-              <div className="flex items-center gap-2 text-primary">
-                <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                <span className="inline-block"> Reply </span>
-              </div>
-            </div>
-          </div>
-          <Link
-            href="#"
-            className="featured-tab link font-semibold clr-primary-400 inline-block py-3 px-6 bg-[var(--primary-light)] hover:bg-primary hover:text-white rounded-full active">
-            See All Reviews
-          </Link>
+            );
+          })}
+
+          <button
+            onClick={() => setOpenReviews(!openReviews)}
+            className="featured-tab link font-semibold clr-primary-400 inline-block py-3 px-6 bg-[var(--primary-light)] hover:bg-primary hover:text-white rounded-full active"
+          >
+            {openReviews ? "Hide" : "See All Reviews"}
+          </button>
         </div>
       </div>
-
-      <div className="section-space--sm">
+      {/* Formulaire d'écriture de commentaire */}
+      {/*  <div className="section-space--sm">
         <div className="bg-white rounded-2xl p-3 sm:p-4 lg:py-8 lg:px-5">
           <h4 className="mb-0 text-2xl font-semibold">Write a review</h4>
           <div className="border border-dashed my-6"></div>
@@ -316,9 +292,9 @@ const page = () => {
             </div>
           </form>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
 
-export default page;
+export default Page;
