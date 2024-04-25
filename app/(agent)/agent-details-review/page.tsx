@@ -94,7 +94,7 @@ const Page = () => {
   const [comments, setComments] = useState(AllComments);
   const [openReviews, setOpenReviews] = useState(false);
   const [filterType, setFilterType] = useState("none");
-  const handleFilterType = (e) => {
+  const handleFilterType = (e:React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setFilterType(value);
     switch (value) {
