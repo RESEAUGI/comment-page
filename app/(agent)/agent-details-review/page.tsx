@@ -7,7 +7,7 @@ import { StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { AllComments } from "../../../data/data";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 type comment = {
   name: string;
@@ -94,7 +94,7 @@ const Page = () => {
   const [comments, setComments] = useState(AllComments);
   const [openReviews, setOpenReviews] = useState(false);
   const [filterType, setFilterType] = useState("none");
-  const handleFilterType = (e:React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFilterType = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setFilterType(value);
     switch (value) {
@@ -178,32 +178,34 @@ const Page = () => {
                 key={index}
                 className="bg-[var(--bg-1)] rounded-2xl p-3 sm:p-4 lg:p-6 mb-8"
               >
-                <div className="flex items-center flex-wrap justify-between gap-4">
-                  <div className="flex gap-5 items-center">
-                    <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
-                      <Image
-                        width={60}
-                        height={60}
-                        src="/img/user-4.jpg"
-                        alt="image"
-                        className=" w-full h-full object-fit-cover"
-                      />
+                <Suspense fallback={<h4>Loading...</h4>}>
+                  <div className="flex items-center flex-wrap justify-between gap-4">
+                    <div className="flex gap-5 items-center">
+                      <div className="w-15 h-15 shrink-0 rounded-full overflow-hidden">
+                        <Image
+                          width={60}
+                          height={60}
+                          src="/img/user-4.jpg"
+                          alt="image"
+                          className=" w-full h-full object-fit-cover"
+                        />
+                      </div>
+                      <div className="flex-grow">
+                        <h5 className="mb-1 font-semibold"> {comment.name} </h5>
+                      </div>
                     </div>
-                    <div className="flex-grow">
-                      <h5 className="mb-1 font-semibold"> {comment.name} </h5>
+                    <div className="text-sm-end">
+                      <p className="mb-1">
+                        {" "}
+                        {extractTimeFromISO8601(comment.date)}{" "}
+                      </p>
+                      <p className="mb-0">
+                        {" "}
+                        {extractDateFromISO8601(comment.date)}{" "}
+                      </p>
                     </div>
                   </div>
-                  <div className="text-sm-end">
-                    <p className="mb-1">
-                      {" "}
-                      {extractTimeFromISO8601(comment.date)}{" "}
-                    </p>
-                    <p className="mb-0">
-                      {" "}
-                      {extractDateFromISO8601(comment.date)}{" "}
-                    </p>
-                  </div>
-                </div>
+                </Suspense>
                 <div className="border border-dashed my-6"></div>
                 <div className="flex gap-1 mb-3">
                   {StarRating(comment.nbstars)}
