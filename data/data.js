@@ -84,3 +84,9 @@ export const AllComments = [
         likes: 33
     }
 ];
+
+export const driverData ={
+    name:"Mr Paul ",
+    id:40,
+    courses:48,
+}

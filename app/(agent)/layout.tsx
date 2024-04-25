@@ -14,6 +14,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { driverData } from "../../data/data";
 
 export default function RootLayout({
   children,
@@ -21,8 +22,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const path = usePathname();
-  return ( <div>{children}</div>
-   /*  <div className="py-[30px] lg:py-[60px] bg-[var(--bg-2)] px-3">
+   {/* <div>{children}</div> */}
+  return (
+   <div className="py-[30px] lg:py-[60px] bg-[var(--bg-2)] px-3">
       <div className="container">
         <div className="grid grid-cols-12 gap-4 lg:gap-6">
           <div className="col-span-12 xl:col-span-4">
@@ -40,26 +42,25 @@ export default function RootLayout({
                 </div>
               </div>
               <h4 className="text-center text-2xl font-semibold mb-4">
-                {" "}
-                Savannah Nguyen{" "}
+               {driverData.name}
               </h4>
               <ul className="flex items-center gap-3 justify-center flex-wrap mb-7">
                 <li>
                   <p className="mb-0">
-                    ID: <span className="text-primary">235</span>
+                    ID: <span className="text-primary">driverData.name</span>
                   </p>
                 </li>
                 <li className="text-primary text-lg">•</li>
                 <li>
-                  <p className="mb-0"> Property: 24 </p>
+                  <p className="mb-0"> courses: {driverData.courses} </p>
                 </li>
                 <li className="text-primary text-lg">•</li>
-                <li>
+                {/* <li>
                   <div className="flex gap-1 items-center">
                     <i className="las la-star text-[var(--tertiary)]"></i>
                     <p className="mb-0"> 4.8 </p>
                   </div>
-                </li>
+                </li> */}
               </ul>
               <ul className="flex justify-center flex-wrap gap-3">
                 <li>
@@ -278,6 +279,6 @@ export default function RootLayout({
           </div>
         </div>
       </div>
-    </div> */
+    </div> 
   );
 }
