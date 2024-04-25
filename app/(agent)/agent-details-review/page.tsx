@@ -11,7 +11,6 @@ import { useState } from "react";
 
 type comment = {
   name: string;
-  time: string;
   date: string;
   nbstars: number;
   content: string;
@@ -60,15 +59,16 @@ function calculateRatingPercent(rating: number) {
 }
 
 const filterByRating = (rating: number) => {
-  const result = AllComments.filter((comment) => {
-    comment.nbstars == rating;
-  });
+  console.log(rating);
+  const result = AllComments.filter((comment) => comment.nbstars == rating);
+  console.log("hey");
+
   return result;
 };
 
 const sortByLikes = () => {
   const sortedComments = [...AllComments];
-  sortedComments.sort((comment1, comment2) => comment1.likes - comment2.likes);
+  sortedComments.sort((comment1, comment2) => comment2.likes - comment1.likes);
   return sortedComments;
 };
 
@@ -86,13 +86,30 @@ const sortByDate = () => {
   sortedComments.sort((comment1, comment2) => {
     const date1 = new Date(comment1.date);
     const date2 = new Date(comment2.date);
-    return date1.getTime() - date2.getTime();
+    return date2.getTime() - date1.getTime();
   });
   return sortedComments;
 };
 const Page = () => {
   const [comments, setComments] = useState(AllComments);
   const [openReviews, setOpenReviews] = useState(false);
+  const [filterType, setFilterType] = useState("none");
+  const handleFilterType = (e) => {
+    const value = e.target.value;
+    setFilterType(value);
+    switch (value) {
+      case "none":
+        break;
+      case "latest":
+        setComments(sortByDate());
+        break;
+      case "interest":
+        setComments(sortByLikes());
+        break;
+      default:
+        setComments(filterByRating(parseInt(e.target.value)));
+    }
+  };
   return (
     <div className="col-span-12">
       <div className="p-3 sm:p-4 lg:p-6 xl:p-8 bg-white rounded-2xl mb-8">
@@ -137,14 +154,18 @@ const Page = () => {
             <div className="flex items-center gap-2">
               <p className="mb-0 clr-neutral-500 shrink-0"> Sort By : </p>
               <div className="border rounded-full pr-3">
-                <select className="w-full bg-transparent px-5 py-3 focus:outline-none">
-                  <option>Latest</option>
-                  <option>Most interesting</option>
+                <select
+                  className="w-full bg-transparent px-5 py-3 focus:outline-none"
+                  onChange={handleFilterType}
+                >
+                  <option value="none">none</option>
+                  <option value="latest">Latest</option>
+                  <option value="interest">Most interesting</option>
                   <option value="1">1⭐</option>
                   <option value="2">2⭐</option>
                   <option value="3">3⭐</option>
-                  <option value="3">4⭐</option>
-                  <option value="3">5⭐</option>
+                  <option value="4">4⭐</option>
+                  <option value="5">5⭐</option>
                 </select>
               </div>
             </div>
@@ -173,8 +194,14 @@ const Page = () => {
                     </div>
                   </div>
                   <div className="text-sm-end">
-                    <p className="mb-1"> {extractTimeFromISO8601(comment.date)} </p>
-                    <p className="mb-0"> {extractDateFromISO8601(comment.date)} </p>
+                    <p className="mb-1">
+                      {" "}
+                      {extractTimeFromISO8601(comment.date)}{" "}
+                    </p>
+                    <p className="mb-0">
+                      {" "}
+                      {extractDateFromISO8601(comment.date)}{" "}
+                    </p>
                   </div>
                 </div>
                 <div className="border border-dashed my-6"></div>

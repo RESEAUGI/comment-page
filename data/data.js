@@ -18,7 +18,7 @@ export const AllComments = [
         date: '2024-09-01T11:35:21.123Z',
         content: "I have some reservations about this article. While it touches on important points, I feel it lacks depth in certain areas.",
         nbstars: 3,
-        likes: 15
+        likes: 45
     },
     {
         name: "David Atangana",
