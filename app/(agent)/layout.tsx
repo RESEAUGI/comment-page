@@ -47,7 +47,7 @@ export default function RootLayout({
               <ul className="flex items-center gap-3 justify-center flex-wrap mb-7">
                 <li>
                   <p className="mb-0">
-                    ID: <span className="text-primary">driverData.name</span>
+                    ID: <span className="text-primary">{driverData.id}</span>
                   </p>
                 </li>
                 <li className="text-primary text-lg">•</li>
