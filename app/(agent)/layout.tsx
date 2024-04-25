@@ -217,7 +217,7 @@ export default function RootLayout({
           </div>
           <div className="col-span-12 xl:col-span-8">
             <div className="grid grid-cols-12 gap-4 align-items-start">
-              <div className="col-span-12">
+             {/*  <div className="col-span-12">
                 <div className="bg-white rounded-2xl py-3 px-6 shadow-lg">
                   <ul className="flex items-center flex-wrap gap-3">
                     <li className="flex-grow">
@@ -273,7 +273,7 @@ export default function RootLayout({
                     </li>
                   </ul>
                 </div>
-              </div>
+              </div> */}
               {children}
             </div>
           </div>
