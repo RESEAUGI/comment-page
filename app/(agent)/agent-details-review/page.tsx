@@ -7,7 +7,7 @@ import { StarIcon, HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/re
 import Image from "next/image";
 import Link from "next/link";
 import { AllComments } from "../../../data/data";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 type comment = {
   name: string;
