@@ -15,10 +15,11 @@ type comment = {
   nbstars: number;
   content: string;
   likes: number;
+  unlikes: number;
 };
 
 type LikeState = {
-  [key: number]: boolean;
+  [key: number]: {isLiked: boolean, isUnliked: boolean};
 };
 
 function StarRating(rating: number) {
@@ -103,20 +104,41 @@ const Page = () => {
   useEffect(() => {
     // Récupérer les données de like depuis le localStorage
     const storedLikes = localStorage.getItem("likes");
+    const storedUnlikes = localStorage.getItem("unlikes");
     if (storedLikes) {
       setLikeState(JSON.parse(storedLikes));
+    }
+    if (storedUnlikes) {
+      setLikeState(JSON.parse(storedUnlikes));
     }
   }, []);
 
   const handleLike = (index: number) => {
-    const isLiked = !likeState[index];
-    const updatedLikeState = { ...likeState, [index]: isLiked };
+    const currentState = likeState[index] || {isLiked: false,isUnliked: false};
+    const updatedState = {isLiked: !currentState.isLiked, isUnliked: currentState.isUnliked ? false:false};
+    const updatedLikeState = { ...likeState, [index]: updatedState };
     setLikeState(updatedLikeState);
     localStorage.setItem("likes", JSON.stringify(updatedLikeState));
 
     // Mettre à jour le nombre de likes
     const updatedComments = [...comments];
-    updatedComments[index].likes += isLiked ? 1 : -1;
+    updatedComments[index].likes += updatedState.isLiked ? 1 : -1;
+    updatedComments[index].unlikes += currentState.isUnliked ? -1 : 0;
+    setComments(updatedComments);
+    localStorage.setItem("comments", JSON.stringify(updatedComments));
+  };
+
+  const handleUnlike = (index: number) => {
+    const currentState = likeState[index] || {isLiked: false,isUnliked: false};
+    const updatedState = {isLiked: currentState.isUnliked ? false:false, isUnliked: !currentState.isUnliked};
+    const updatedLikeState = { ...likeState, [index]: updatedState };
+    setLikeState(updatedLikeState);
+    localStorage.setItem("likes", JSON.stringify(updatedLikeState));
+
+    // Mettre à jour le nombre de likes
+    const updatedComments = [...comments];
+    updatedComments[index].likes += currentState.isLiked ? -1 : 0;
+    updatedComments[index].unlikes += updatedState.isUnliked ? 1 : -1;
     setComments(updatedComments);
     localStorage.setItem("comments", JSON.stringify(updatedComments));
   };
@@ -238,24 +260,36 @@ const Page = () => {
                 <p className="mb-0 clr-neutral-500">{comment.content}</p>
                 <div className="border border-dashed my-6"></div>
                   <div className="flex flex-wrap items-center gap-10">
-                    <div className={`flex items-center gap-2 text-primary cursor-pointer ${likeState[index] ? "text-blue-500" : ""}`}
+                    <div className={`flex items-center gap-2 text-primary cursor-pointer ${likeState[index]?.isLiked ? "text-blue-500" : ""}`}
                     onClick={() => handleLike(index)}
-                  >
-                    {likeState[index] ? (
-                      <HandThumbUpIconSolid className="w-5 h-5" />
-                    ) : (
-                      <HandThumbUpIcon className="w-5 h-5" />
-                    )}
-                    <span className="inline-block"> {comment.likes} </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-primary">
-                    <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                    <span className="inline-block"> Reply </span>
+                    >
+                      {likeState[index]?.isLiked ? (
+                        <HandThumbUpIconSolid className="w-5 h-5" />
+                      ) : (
+                        <HandThumbUpIcon className="w-5 h-5" />
+                      )}
+                      <span className="inline-block"> {comment.likes} </span>
+                    </div>
+
+                    <div className={`flex items-center gap-2 text-primary cursor-pointer ${likeState[index]?.isUnliked ? "text-red-500" : ""}`}
+                    onClick={() => handleUnlike(index)}
+                    >
+                      {likeState[index]?.isUnliked ? (
+                        <HandThumbUpIconSolid className="w-5 h-5 rotate-180" />
+                      ) : (
+                        <HandThumbUpIcon className="w-5 h-5 rotate-180" />
+                      )}
+                      <span className="inline-block"> {comment.unlikes} </span>
+                    </div>
+
+                    {/*<div className="flex items-center gap-2 text-primary">
+                      <ChatBubbleLeftRightIcon className="w-5 h-5" />
+                      <span className="inline-block"> Reply </span>
+                    </div>*/}
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
 
           <button
             onClick={() => setOpenReviews(!openReviews)}
@@ -266,7 +300,7 @@ const Page = () => {
         </div>
       </div>
       {/* Formulaire d'écriture de commentaire */}
-      {/*  <div className="section-space--sm">
+      <div className="section-space--sm">
         <div className="bg-white rounded-2xl p-3 sm:p-4 lg:py-8 lg:px-5">
           <h4 className="mb-0 text-2xl font-semibold">Write a review</h4>
           <div className="border border-dashed my-6"></div>
@@ -325,7 +359,7 @@ const Page = () => {
             </div>
           </form>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
