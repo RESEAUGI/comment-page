@@ -101,7 +101,7 @@ const sortByDate = () => {
 
 
 const Page = () => {
-  const [comments, setComments] = useState(JSON.parse(localStorage.getItem("comments")));
+  const [comments, setComments] = useState(JSON.parse(localStorage.getItem("comments") || "Error"));
   const [openReviews, setOpenReviews] = useState(false);
   const [filterType, setFilterType] = useState("none");
   const [likeState, setLikeState] = useState<LikeState>({});
