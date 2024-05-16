@@ -268,7 +268,7 @@ const Page = () => {
         </div>
       </div>
       {/* Formulaire d'écriture de commentaire */}
-      {/*  <div className="section-space--sm">
+       <div className="section-space--sm">
         <div className="bg-white rounded-2xl p-3 sm:p-4 lg:py-8 lg:px-5">
           <h4 className="mb-0 text-2xl font-semibold">Write a review</h4>
           <div className="border border-dashed my-6"></div>
@@ -327,7 +327,7 @@ const Page = () => {
             </div>
           </form>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
