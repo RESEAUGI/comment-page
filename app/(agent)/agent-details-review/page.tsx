@@ -3,11 +3,11 @@ import {
   ChatBubbleLeftRightIcon,
   HandThumbUpIcon,
 } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
+import { StarIcon, HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { AllComments } from "../../../data/data";
-import { Suspense, useState } from "react";
+import { useEffect, useState } from "react";
 
 type comment = {
   name: string;
@@ -15,6 +15,10 @@ type comment = {
   nbstars: number;
   content: string;
   likes: number;
+};
+
+type LikeState = {
+  [key: number]: boolean;
 };
 
 function StarRating(rating: number) {
@@ -93,8 +97,31 @@ const sortByDate = () => {
 const Page = () => {
   const [comments, setComments] = useState(AllComments);
   const [openReviews, setOpenReviews] = useState(false);
-  const [filterType, setFilterType] = useState("none");
-  const handleFilterType = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const [filterType, setFilterType] = useState("none"); 
+  const [likeState, setLikeState] = useState<LikeState>({});
+
+  useEffect(() => {
+    // Récupérer les données de like depuis le localStorage
+    const storedLikes = localStorage.getItem("likes");
+    if (storedLikes) {
+      setLikeState(JSON.parse(storedLikes));
+    }
+  }, []);
+
+  const handleLike = (index: number) => {
+    const isLiked = !likeState[index];
+    const updatedLikeState = { ...likeState, [index]: isLiked };
+    setLikeState(updatedLikeState);
+    localStorage.setItem("likes", JSON.stringify(updatedLikeState));
+
+    // Mettre à jour le nombre de likes
+    const updatedComments = [...comments];
+    updatedComments[index].likes += isLiked ? 1 : -1;
+    setComments(updatedComments);
+    localStorage.setItem("comments", JSON.stringify(updatedComments));
+  };
+
+  const handleFilterType = (e:React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setFilterType(value);
     switch (value) {
@@ -212,9 +239,15 @@ const Page = () => {
                 </div>
                 <p className="mb-0 clr-neutral-500">{comment.content}</p>
                 <div className="border border-dashed my-6"></div>
-                <div className="flex flex-wrap items-center gap-10">
-                  <div className="flex items-center gap-2 text-primary">
-                    <HandThumbUpIcon className="w-5 h-5" />
+                  <div className="flex flex-wrap items-center gap-10">
+                    <div className={`flex items-center gap-2 text-primary cursor-pointer ${likeState[index] ? "text-blue-500" : ""}`}
+                    onClick={() => handleLike(index)}
+                  >
+                    {likeState[index] ? (
+                      <HandThumbUpIconSolid className="w-5 h-5" />
+                    ) : (
+                      <HandThumbUpIcon className="w-5 h-5" />
+                    )}
                     <span className="inline-block"> {comment.likes} </span>
                   </div>
                   <div className="flex items-center gap-2 text-primary">
