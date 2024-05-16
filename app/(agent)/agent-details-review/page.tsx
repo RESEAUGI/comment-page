@@ -3,7 +3,10 @@ import {
   ChatBubbleLeftRightIcon,
   HandThumbUpIcon,
 } from "@heroicons/react/24/outline";
-import { StarIcon, HandThumbUpIcon as HandThumbUpIconSolid } from "@heroicons/react/24/solid";
+import {
+  StarIcon,
+  HandThumbUpIcon as HandThumbUpIconSolid,
+} from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { AllComments } from "../../../data/data";
@@ -94,11 +97,14 @@ const sortByDate = () => {
   });
   return sortedComments;
 };
+
+
 const Page = () => {
-  const [comments, setComments] = useState(AllComments);
+  const [comments, setComments] = useState(JSON.parse(localStorage.getItem("comments")));
   const [openReviews, setOpenReviews] = useState(false);
-  const [filterType, setFilterType] = useState("none"); 
+  const [filterType, setFilterType] = useState("none");
   const [likeState, setLikeState] = useState<LikeState>({});
+  const [ratingStar,setRatingStar] = useState(0);
 
   useEffect(() => {
     // Récupérer les données de like depuis le localStorage
@@ -106,7 +112,11 @@ const Page = () => {
     if (storedLikes) {
       setLikeState(JSON.parse(storedLikes));
     }
-  }, []);
+/*     setComments(localStorage.getItem("comments"));
+ */  }, []);
+  useEffect(() => {
+    localStorage.setItem("comments", JSON.stringify(comments));
+  }, [comments]);
 
   const handleLike = (index: number) => {
     const isLiked = !likeState[index];
@@ -121,7 +131,7 @@ const Page = () => {
     localStorage.setItem("comments", JSON.stringify(updatedComments));
   };
 
-  const handleFilterType = (e:React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFilterType = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
     setFilterType(value);
     switch (value) {
@@ -137,6 +147,25 @@ const Page = () => {
         setComments(filterByRating(parseInt(e.target.value)));
     }
   };
+
+  const handleSubmitCommentForm = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData);
+    const newComment = {
+      name: data["reviewer-name"].toString(),
+      date: "2024-02-14T03:00:27.123Z",
+      content: data["reviewer-comment"].toString(),
+      nbstars: ratingStar+1,
+      likes: 0,
+    };
+    console.log("New comment", newComment);
+    const oldComments = [...comments, newComment];
+    setComments(oldComments);
+    e.currentTarget.reset();
+  };
+
+
   return (
     <div className="col-span-12">
       <div className="p-3 sm:p-4 lg:p-6 xl:p-8 bg-white rounded-2xl mb-8">
@@ -239,8 +268,11 @@ const Page = () => {
                 </div>
                 <p className="mb-0 clr-neutral-500">{comment.content}</p>
                 <div className="border border-dashed my-6"></div>
-                  <div className="flex flex-wrap items-center gap-10">
-                    <div className={`flex items-center gap-2 text-primary cursor-pointer ${likeState[index] ? "text-blue-500" : ""}`}
+                <div className="flex flex-wrap items-center gap-10">
+                  <div
+                    className={`flex items-center gap-2 text-primary cursor-pointer ${
+                      likeState[index] ? "text-blue-500" : ""
+                    }`}
                     onClick={() => handleLike(index)}
                   >
                     {likeState[index] ? (
@@ -250,10 +282,10 @@ const Page = () => {
                     )}
                     <span className="inline-block"> {comment.likes} </span>
                   </div>
-                  <div className="flex items-center gap-2 text-primary">
+                  {/*  <div className="flex items-center gap-2 text-primary">
                     <ChatBubbleLeftRightIcon className="w-5 h-5" />
                     <span className="inline-block"> Reply </span>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             );
@@ -274,18 +306,24 @@ const Page = () => {
           <div className="border border-dashed my-6"></div>
           <p className="text-xl font-medium mb-3">Rating *</p>
           <div className="flex gap-1 mb-3">
-            <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
-            <StarIcon className="w-5 h-5 text-[var(--tertiary)]" />
+            {[1, 2, 3, 4, 5].map((starValue, index) => (
+              <StarIcon
+                key={index}
+                onClick={()=>setRatingStar(index)}
+                className={`w-5 h-5 ${
+                  index <= ratingStar ? "text-[var(--tertiary)]" : ""
+                }`}
+                style={{"cursor":"pointer"}}
+              />
+            ))}
           </div>
-          <form action="#">
+          <form onSubmit={handleSubmitCommentForm}>
             <div className="grid grid-cols-12 gap-4">
               <div className="col-span-12">
                 <label
                   htmlFor="review-name"
-                  className="text-xl font-medium block mb-3">
+                  className="text-xl font-medium block mb-3"
+                >
                   Name *
                 </label>
                 <input
@@ -293,12 +331,14 @@ const Page = () => {
                   className="w-full bg-[var(--bg-1)] border border-neutral-40 rounded-full py-3 px-5 focus:outline-none"
                   placeholder="Enter Name.."
                   id="review-name"
+                  name="reviewer-name"
                 />
               </div>
               <div className="col-span-12">
                 <label
                   htmlFor="review-email"
-                  className="text-xl font-medium block mb-3">
+                  className="text-xl font-medium block mb-3"
+                >
                   Email *
                 </label>
                 <input
@@ -306,27 +346,35 @@ const Page = () => {
                   className="w-full bg-[var(--bg-1)] border border-neutral-40 rounded-full py-3 px-5 focus:outline-none"
                   placeholder="Enter Email.."
                   id="review-email"
+                  name="reviewer-mail"
                 />
               </div>
               <div className="col-span-12">
                 <label
                   htmlFor="review-review"
-                  className="text-xl font-medium block mb-3">
+                  className="text-xl font-medium block mb-3"
+                >
                   Review *
                 </label>
                 <textarea
                   id="review-review"
                   rows={5}
-                  className="bg-[var(--bg-1)] border rounded-2xl py-3 px-5 w-full focus:outline-none"></textarea>
+                  className="bg-[var(--bg-1)] border rounded-2xl py-3 px-5 w-full focus:outline-none"
+                  name="reviewer-comment"
+                ></textarea>
               </div>
               <div className="col-span-12">
-                <Link href="#" className="btn-primary">
+                <button
+                  type="submit"
+                  className="featured-tab link font-semibold clr-primary-400 inline-block py-3 px-6 bg-[var(--primary-light)] hover:bg-primary hover:text-[var(--tertiary)] rounded-full active"
+                >
                   Submit Review
-                </Link>
+                </button>
               </div>
             </div>
           </form>
         </div>
+      </div>
       </div>
     </div>
   );
