@@ -55,12 +55,12 @@ export default function RootLayout({
                   <p className="mb-0"> courses: {driverData.courses} </p>
                 </li>
                 <li className="text-primary text-lg">•</li>
-                {/* <li>
+                <li>
                   <div className="flex gap-1 items-center">
                     <i className="las la-star text-[var(--tertiary)]"></i>
-                    <p className="mb-0"> 4.8 </p>
+                    <p className="mb-0"> 3.3 </p>
                   </div>
-                </li> */}
+                </li>
               </ul>
               <ul className="flex justify-center flex-wrap gap-3">
                 <li>
