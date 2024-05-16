@@ -226,7 +226,7 @@ const Page = () => {
               </div>
             </div>
           </div>
-          {comments.map((comment, index) => {
+          {comments.map((comment:comment, index:number) => {
             return index > 1 && !openReviews ? (
               ""
             ) : (
