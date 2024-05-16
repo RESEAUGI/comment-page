@@ -274,7 +274,7 @@ export default function RootLayout({
                   </ul>
                 </div>
               </div> */}
-              {children}
+              {/* {children} */}
             </div>
           </div>
         </div>
